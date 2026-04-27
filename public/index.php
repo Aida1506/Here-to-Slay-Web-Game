@@ -172,6 +172,13 @@ $app->get('/tutorial/step/{step}', function (Request $request, Response $respons
     return $step ? jsonResponse($response, $step) : notFound($response, 'Step not found');
 });
 
+// aceasta ruta returneaza pasul tutorialului dupa actiune
+// apeleaza getStepByAction cu actiunea din url si returneaza pasul sau 404
+$app->get('/tutorial/action/{action}', function (Request $request, Response $response, array $args) use ($tutorialService) {
+    $step = $tutorialService->getStepByAction($args['action']);
+    return $step ? jsonResponse($response, $step) : notFound($response, 'Step not found');
+});
+
 // aceasta ruta joaca o carte
 // apeleaza playCard cu gameId playerId si cardId din body si foloseste actionResponse
 $app->post('/games/{gameId}/cards/play', function (Request $request, Response $response, array $args) use ($gameService) {
