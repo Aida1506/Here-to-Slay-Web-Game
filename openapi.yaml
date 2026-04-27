@@ -1,0 +1,802 @@
+# acesta este fisierul de specificatie OpenAPI pentru API-ul jocului Here to Slay
+# defineste toate endpoint-urile disponibile si structurile de date
+openapi: 3.0.0
+info:
+  title: Here to Slay API
+  version: 1.1.0
+  description: API for managing Here to Slay board game sessions
+
+servers:
+  - url: http://localhost:8000
+
+# aceasta sectiune defineste toate rutele API disponibile
+paths:
+
+  # ruta pentru gestionarea jocurilor - get pentru lista post pentru creare
+  /games:
+    get:
+      summary: Get all games
+      responses:
+        '200':
+          description: List of games
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+
+    post:
+      summary: Create new game
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  example: "Game 1"
+            examples:
+              newGame:
+                summary: Create a new game
+                value:
+                  name: "Friday Night Game"
+      responses:
+        '201':
+          description: Game created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+
+  /games/{gameId}:
+    get:
+      summary: Get game details
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Game details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '404':
+          description: Game not found
+
+    put:
+      summary: Replace editable game fields
+      description: Updates editable game metadata such as name, current turn player, action points, and last message.
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameUpdate'
+            examples:
+              renameGame:
+                summary: Rename game and set action points
+                value:
+                  name: "Updated Game"
+                  actionPoints: 2
+                  lastMessage: "Game was updated."
+      responses:
+        '200':
+          description: Game updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '404':
+          description: Game not found
+
+    patch:
+      summary: Partially update game fields
+      description: Partially updates editable game metadata such as name, current turn player, action points, and last message.
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameUpdate'
+            examples:
+              partialGameUpdate:
+                summary: Change only the game name
+                value:
+                  name: "Quick Match"
+      responses:
+        '200':
+          description: Game updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '404':
+          description: Game not found
+
+    delete:
+      summary: Delete a game
+      description: Deletes the game and its players.
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Game deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '404':
+          description: Game not found
+
+  /games/{gameId}/turn/end:
+    post:
+      summary: End current turn
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Turn ended
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '404':
+          description: Game not found
+
+  /players:
+    get:
+      summary: Get all players
+      responses:
+        '200':
+          description: List of players
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Player'
+
+  /players/{playerId}:
+    put:
+      summary: Replace editable player fields
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerUpdate'
+            examples:
+              updatePlayer:
+                summary: Update player profile
+                value:
+                  name: "Alex"
+                  partyLeader: "Blade Leader"
+                  partyLeaderClass: "fighter"
+      responses:
+        '200':
+          description: Player updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        '404':
+          description: Player not found
+
+    patch:
+      summary: Partially update player fields
+      parameters:
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayerUpdate'
+            examples:
+              renamePlayer:
+                summary: Change only player name
+                value:
+                  name: "Maria"
+      responses:
+        '200':
+          description: Player updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Player'
+        '404':
+          description: Player not found
+
+  /cards:
+    get:
+      summary: Get all cards
+      responses:
+        '200':
+          description: List of cards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Card'
+
+  /monsters:
+    get:
+      summary: Get monsters
+      responses:
+        '200':
+          description: List of monsters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Monster'
+
+  /deck/draw:
+    post:
+      summary: Draw card
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [playerId, gameId]
+              properties:
+                playerId:
+                  type: string
+                gameId:
+                  type: string
+            examples:
+              drawCard:
+                summary: Draw one card
+                value:
+                  gameId: "game_123"
+                  playerId: "game_123_p1"
+      responses:
+        '200':
+          description: Card drawn
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+
+  /games/{gameId}/cards/play:
+    post:
+      summary: Play a card
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [playerId, cardId]
+              properties:
+                playerId:
+                  type: string
+                cardId:
+                  type: string
+            examples:
+              playCard:
+                summary: Play a card from hand
+                value:
+                  playerId: "game_123_p1"
+                  cardId: "c1_copy_1"
+      responses:
+        '200':
+          description: Card played
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  card:
+                    $ref: '#/components/schemas/Card'
+
+  /games/{gameId}/heroes/{heroId}/roll:
+    post:
+      summary: Roll dice for hero ability
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: heroId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [playerId]
+              properties:
+                playerId:
+                  type: string
+            examples:
+              rollHero:
+                summary: Roll for hero ability
+                value:
+                  playerId: "game_123_p1"
+      responses:
+        '200':
+          description: Dice rolled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  roll:
+                    type: integer
+                  dice:
+                    type: array
+                    items:
+                      type: integer
+
+  /games/{gameId}/modifiers/use:
+    post:
+      summary: Use modifier card
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [playerId, modifierId, modifierValue]
+              properties:
+                playerId:
+                  type: string
+                modifierId:
+                  type: string
+                modifierValue:
+                  type: integer
+            examples:
+              useModifier:
+                summary: Use a modifier card
+                value:
+                  playerId: "game_123_p1"
+                  modifierId: "c11_copy_1"
+                  modifierValue: 2
+      responses:
+        '200':
+          description: Modifier used
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /games/{gameId}/challenges:
+    post:
+      summary: Challenge a card play
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [challengerId, targetPlayerId, cardId]
+              properties:
+                challengerId:
+                  type: string
+                targetPlayerId:
+                  type: string
+                cardId:
+                  type: string
+            examples:
+              challengeCard:
+                summary: Challenge another player
+                value:
+                  challengerId: "game_123_p2"
+                  targetPlayerId: "game_123_p1"
+                  cardId: "c3_copy_1"
+      responses:
+        '200':
+          description: Challenge result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  challengerRoll:
+                    type: integer
+                  targetRoll:
+                    type: integer
+
+  /games/{gameId}/discard-draw:
+    post:
+      summary: Discard hand and draw 5 new cards
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [playerId]
+              properties:
+                playerId:
+                  type: string
+            examples:
+              discardAndDraw:
+                summary: Discard hand and draw five cards
+                value:
+                  playerId: "game_123_p1"
+      responses:
+        '200':
+          description: Cards discarded and drawn
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  discarded:
+                    type: integer
+                  drawn:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Card'
+
+  /games/{gameId}/players/{playerId}/hand/{cardId}:
+    delete:
+      summary: Discard a card from a player's hand
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: cardId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Card discarded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardActionResult'
+        '400':
+          description: Card could not be discarded
+
+  /games/{gameId}/players/{playerId}/party/{cardId}:
+    delete:
+      summary: Remove a card from a player's party
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: playerId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: cardId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Card removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardActionResult'
+        '400':
+          description: Card could not be removed
+
+  /monsters/{monsterId}/attack:
+    post:
+      summary: Attack monster
+      parameters:
+        - name: monsterId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [playerId, roll]
+              properties:
+                playerId:
+                  type: string
+                roll:
+                  type: integer
+                  example: 7
+      responses:
+        '200':
+          description: Attack result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  /games/{gameId}/active-monsters/{monsterId}:
+    delete:
+      summary: Remove an active monster from a game
+      description: Removes an active monster and replaces it from the monster deck when possible.
+      parameters:
+        - name: gameId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: monsterId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Monster removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonsterActionResult'
+        '400':
+          description: Monster could not be removed
+
+# aceasta sectiune defineste toate schemele de date folosite in API
+components:
+  schemas:
+
+    Player:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        partyLeader:
+          type: string
+        hand:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        party:
+          type: array
+          items:
+            $ref: '#/components/schemas/Hero'
+        slainMonsters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Monster'
+
+    PlayerUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Player 1"
+        partyLeader:
+          type: string
+          example: "Blade Leader"
+        partyLeaderClass:
+          type: string
+          enum: [fighter, guardian, ranger, thief, wizard, bard]
+
+    Card:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [hero, item, magic, modifier, challenge]
+        description:
+          type: string
+
+    Hero:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        class:
+          type: string
+          enum: [fighter, guardian, ranger, thief, wizard, bard]
+        effect:
+          type: string
+        rollRequirement:
+          type: integer
+
+    Monster:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        rollRequirement:
+          type: integer
+        penalty:
+          type: string
+        reward:
+          type: string
+
+    Game:
+      type: object
+      properties:
+        id:
+          type: string
+        players:
+          type: array
+          items:
+            $ref: '#/components/schemas/Player'
+        currentTurnPlayer:
+          $ref: '#/components/schemas/Player'
+        mainDeck:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        discardPile:
+          type: array
+          items:
+            $ref: '#/components/schemas/Card'
+        monsterDeck:
+          type: array
+          items:
+            $ref: '#/components/schemas/Monster'
+        activeMonsters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Monster'
+        actionPoints:
+          type: integer
+          minimum: 0
+          maximum: 3
+        lastMessage:
+          type: string
+
+    GameUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Friday Night Game"
+        currentTurnPlayerId:
+          type: string
+        actionPoints:
+          type: integer
+          minimum: 0
+          maximum: 3
+        lastMessage:
+          type: string
+
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+
+    CardActionResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        card:
+          $ref: '#/components/schemas/Card'
+        game:
+          $ref: '#/components/schemas/Game'
+
+    MonsterActionResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        monster:
+          $ref: '#/components/schemas/Monster'
+        game:
+          $ref: '#/components/schemas/Game'

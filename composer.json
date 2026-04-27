@@ -1,0 +1,20 @@
+{
+  // aceasta sectiune specifica dependentele proiectului
+  "require": {
+    // framework-ul Slim pentru routing HTTP
+    "slim/slim": "^4.14",
+    // implementarea PSR-7 pentru request/response
+    "slim/psr7": "^1.7",
+    // Doctrine DBAL pentru abstractizarea bazei de date
+    "doctrine/dbal": "^3.0",
+    // Laminas ACL pentru controlul accesului bazat pe roluri
+    "laminas/laminas-permissions-acl": "^2.8"
+  },
+  // aceasta sectiune configureaza autoloading-ul PSR-4
+  "autoload": {
+    "psr-4": {
+      // namespace-ul App mapeaza la folderul src
+      "App\\": "src/"
+    }
+  }
+}

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!-- aceasta este declaratia doctype pentru html5 -->
+<html lang="en">
+<!-- aceasta este eticheta html cu atributul lang setat la en -->
+<head>
+    <!-- aceasta este sectiunea head care contine metadate -->
+    <meta charset="UTF-8">
+    <!-- aceasta meta specifica charset-ul utf-8 pentru encoding -->
+    <title>Here to Slay UI Preview</title>
+    <!-- aceasta este titlul paginii afisat in browser -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- aceasta meta face pagina responsive pe dispozitive mobile -->
+    <link rel="stylesheet" href="assets/css/game.css">
+    <!-- aceasta incarca fisierul css pentru stilizare -->
+</head>
+<body>
+    <!-- aceasta este corpul paginii -->
+    <main class="app-shell">
+        <!-- aceasta este sectiunea principala cu clasa app-shell -->
+        <section class="top-panel">
+            <!-- aceasta este sectiunea top-panel pentru header -->
+            <div>
+                <!-- div pentru titlu -->
+                <p class="eyebrow">UI Preview</p>
+                <!-- paragraf cu clasa eyebrow pentru subtitlu -->
+                <h1>Here to Slay</h1>
+                <!-- heading principal -->
+            </div>
+
+            <div class="game-controls">
+                <!-- div pentru controalele jocului -->
+                <button id="newGameBtn">New Game</button>
+                <!-- buton pentru joc nou cu id newGameBtn -->
+                <button id="refreshBtn">Refresh</button>
+                <!-- buton pentru refresh cu id refreshBtn -->
+            </div>
+        </section>
+
+        <section class="status-bar">
+            <!-- aceasta este sectiunea status-bar pentru informatii despre joc -->
+            <div>
+                <!-- div pentru jucatorul curent -->
+                <span>Current turn</span>
+                <!-- span pentru eticheta -->
+                <strong id="currentPlayer">Player 1</strong>
+                <!-- strong cu id currentPlayer pentru numele jucatorului -->
+            </div>
+            <div>
+                <!-- div pentru punctele de actiune -->
+                <span>Action points</span>
+                <!-- span pentru eticheta -->
+                <strong id="actionPoints">3</strong>
+                <!-- strong cu id actionPoints pentru numarul de puncte -->
+            </div>
+            <div>
+                <!-- div pentru pachetul principal -->
+                <span>Main deck</span>
+                <!-- span pentru eticheta -->
+                <strong id="mainDeckCount">72</strong>
+                <!-- strong cu id mainDeckCount pentru numar carti -->
+            </div>
+            <div>
+                <!-- div pentru pachetul monstri -->
+                <span>Monster deck</span>
+                <!-- span pentru eticheta -->
+                <strong id="monsterDeckCount">12</strong>
+                <!-- strong cu id monsterDeckCount pentru numar monstri -->
+            </div>
+        </section>
+
+        <section class="board-wrapper">
+            <!-- aceasta este sectiunea board-wrapper pentru tabla de joc -->
+            <div class="board">
+                <!-- div cu clasa board pentru tabla -->
+                <div class="board-glow"></div>
+                <!-- div cu clasa board-glow pentru efect luminos -->
+
+                <section id="playerTop" class="player-zone player-zone-top"></section>
+                <!-- sectiune pentru jucatorul de sus -->
+                <section id="playerLeft" class="player-zone player-zone-left"></section>
+                <!-- sectiune pentru jucatorul din stanga -->
+                <section id="playerRight" class="player-zone player-zone-right"></section>
+                <!-- sectiune pentru jucatorul din dreapta -->
+                <section id="playerBottom" class="player-zone player-zone-bottom"></section>
+                <!-- sectiune pentru jucatorul de jos -->
+
+                <section class="center-zone">
+                    <!-- aceasta este sectiunea center-zone pentru zona centrala -->
+                    <div class="monster-area">
+                        <!-- div cu clasa monster-area pentru monstri -->
+                        <h2>Active Monsters</h2>
+                        <!-- heading pentru monstrii activi -->
+                        <div id="activeMonsters" class="monster-row"></div>
+                        <!-- div cu id activeMonsters pentru randul de monstri -->
+                    </div>
+
+                    <div class="deck-area">
+                        <!-- div cu clasa deck-area pentru zona pachetelor -->
+                        <div class="deck-card main-deck">
+                            <!-- div pentru pachetul principal -->
+                            <span>Main Deck</span>
+                            <!-- span pentru eticheta -->
+                            <strong id="mainDeckMiniCount">72</strong>
+                            <!-- strong cu id mainDeckMiniCount pentru numar -->
+                        </div>
+
+                        <div class="dice-box">
+                            <!-- div cu clasa dice-box pentru zaruri -->
+                            <div id="dieOne" class="die">?</div>
+                            <!-- div cu id dieOne pentru primul zar -->
+                            <div id="dieTwo" class="die">?</div>
+                            <!-- div cu id dieTwo pentru al doilea zar -->
+                            <button id="rollBtn">Roll Dice</button>
+                            <!-- buton cu id rollBtn pentru aruncarea zarurilor -->
+                        </div>
+
+                        <div class="deck-card discard-deck">
+                            <!-- div pentru pachetul de discard -->
+                            <span>Discard</span>
+                            <!-- span pentru eticheta -->
+                            <strong id="discardCount">5</strong>
+                            <!-- strong cu id discardCount pentru numar -->
+                        </div>
+                    </div>
+
+                    <div class="action-panel">
+                        <!-- div cu clasa action-panel pentru actiuni -->
+                        <button id="drawBtn">Draw Card - 1 AP</button>
+                        <!-- buton cu id drawBtn pentru tragere carte -->
+                        <button id="attackBtn">Attack Selected Monster - 2 AP</button>
+                        <!-- buton cu id attackBtn pentru atac -->
+                        <button id="endTurnBtn">End Turn</button>
+                        <!-- buton cu id endTurnBtn pentru sfarsit tura -->
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <section class="hand-panel">
+            <!-- aceasta este sectiunea hand-panel pentru mana jucatorului -->
+            <div class="hand-header">
+                <!-- div cu clasa hand-header pentru header mana -->
+                <div>
+                    <!-- div pentru titlu mana -->
+                    <p class="eyebrow">Your hand</p>
+                    <!-- paragraf cu clasa eyebrow pentru subtitlu -->
+                    <h2 id="handOwner">Player 1</h2>
+                    <!-- heading cu id handOwner pentru proprietar -->
+                </div>
+                <p id="messageBox">This is only a UI preview. No backend is running.</p>
+                <!-- paragraf cu id messageBox pentru mesaje -->
+            </div>
+
+            <div id="playerHand" class="hand-row"></div>
+            <!-- div cu id playerHand pentru randul mainii -->
+        </section>
+    </main>
+
+    <script src="assets/js/preview.js"></script>
+    <!-- aceasta incarca fisierul javascript pentru functionalitate -->
+</body>
+</html>
