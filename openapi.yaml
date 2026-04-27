@@ -1,5 +1,3 @@
-# acesta este fisierul de specificatie OpenAPI pentru API-ul jocului Here to Slay
-# defineste toate endpoint-urile disponibile si structurile de date
 openapi: 3.0.0
 info:
   title: Here to Slay API
@@ -9,7 +7,6 @@ info:
 servers:
   - url: http://localhost:8000
 
-# aceasta sectiune defineste toate rutele API disponibile
 paths:
 
   # ruta pentru gestionarea jocurilor - get pentru lista post pentru creare
@@ -271,7 +268,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/Monster'
 
-  # ruta pentru tutorial - obtine toti pasii tutorialului
   /tutorial:
     get:
       summary: Get all tutorial steps
@@ -285,7 +281,6 @@ paths:
                 items:
                   $ref: '#/components/schemas/TutorialStep'
 
-  # ruta pentru pasul tutorialului dupa numar
   /tutorial/step/{step}:
     get:
       summary: Get tutorial step by number
@@ -308,7 +303,6 @@ paths:
         '404':
           description: Tutorial step not found
 
-  # ruta pentru pasul tutorialului dupa actiune
   /tutorial/action/{action}:
     get:
       summary: Get tutorial step by action
@@ -700,7 +694,6 @@ paths:
         '400':
           description: Monster could not be removed
 
-# aceasta sectiune defineste toate schemele de date folosite in API
 components:
   schemas:
 
@@ -781,7 +774,6 @@ components:
         reward:
           type: string
 
-    # schema pentru pasul tutorialului
     TutorialStep:
       type: object
       properties:
