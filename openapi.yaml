@@ -271,6 +271,65 @@ paths:
                 items:
                   $ref: '#/components/schemas/Monster'
 
+  # ruta pentru tutorial - obtine toti pasii tutorialului
+  /tutorial:
+    get:
+      summary: Get all tutorial steps
+      responses:
+        '200':
+          description: List of tutorial steps
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TutorialStep'
+
+  # ruta pentru pasul tutorialului dupa numar
+  /tutorial/step/{step}:
+    get:
+      summary: Get tutorial step by number
+      parameters:
+        - name: step
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10
+          description: Tutorial step number (1-10)
+      responses:
+        '200':
+          description: Tutorial step details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TutorialStep'
+        '404':
+          description: Tutorial step not found
+
+  # ruta pentru pasul tutorialului dupa actiune
+  /tutorial/action/{action}:
+    get:
+      summary: Get tutorial step by action
+      parameters:
+        - name: action
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [setup, turn_start, draw_card, play_hero, roll_dice, attack_monster, use_modifier, challenge, end_turn, check_win]
+          description: Tutorial action type
+      responses:
+        '200':
+          description: Tutorial step for the action
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TutorialStep'
+        '404':
+          description: Tutorial step not found
+
   /deck/draw:
     post:
       summary: Draw card
@@ -721,6 +780,26 @@ components:
           type: string
         reward:
           type: string
+
+    # schema pentru pasul tutorialului
+    TutorialStep:
+      type: object
+      properties:
+        step:
+          type: integer
+          minimum: 1
+          maximum: 10
+          description: Tutorial step number
+        title:
+          type: string
+          description: Step title
+        description:
+          type: string
+          description: Detailed step description
+        action:
+          type: string
+          enum: [setup, turn_start, draw_card, play_hero, roll_dice, attack_monster, use_modifier, challenge, end_turn, check_win]
+          description: Action type for this step
 
     Game:
       type: object

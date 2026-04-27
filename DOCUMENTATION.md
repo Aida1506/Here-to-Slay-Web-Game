@@ -230,6 +230,27 @@ Content-Type: application/json
 DELETE /games/{gameId}?role=admin
 ```
 
+### Obtinere tutorial
+
+# exemplu de obtinere a tuturor pasilor tutorialului
+```http
+GET /tutorial
+```
+
+### Obtinere pas tutorial dupa numar
+
+# exemplu de obtinere a unui pas specific din tutorial
+```http
+GET /tutorial/step/1
+```
+
+### Obtinere pas tutorial dupa actiune
+
+# exemplu de obtinere a pasului tutorialului dupa actiune
+```http
+GET /tutorial/action/draw_card
+```
+
 ## 9. Reguli implementate
 
 # aceasta sectiune descrie regulile jocului implementate

@@ -102,6 +102,7 @@ http://localhost:8101
 - `GET /monsters`
 - `GET /tutorial`
 - `GET /tutorial/step/{step}`
+- `GET /tutorial/action/{action}`
 
 ## Roluri ACL
 
